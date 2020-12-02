@@ -69,7 +69,7 @@ class LineWebhookController extends Controller
                     case "F2":
                         $lineWordArr[2] = "0121";
                         break;
-                    case "F4":
+                    case "F3":
                         $lineWordArr[2] = "0122";
                         break;
                     case "F4":
