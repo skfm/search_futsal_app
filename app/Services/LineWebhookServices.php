@@ -82,7 +82,7 @@ class LineWebhookServices
         return $lineWordArr[2];
     }
 
-    public static function getReplyMessage($message_text, $lineBot)
+    public static function getReplyMessage($message_text, $lineBot, $event)
     {
         $sendMessage = new MultiMessageBuilder();
         $textMessageBuilder = new TextMessageBuilder($message_text);
@@ -106,7 +106,7 @@ class LineWebhookServices
             switch ($datesCount){
                 case 0:
                     $message_text = "検索結果が0件でした。日程を変更して再検索して見てください。";
-                    LineWebhookServices::getReplyMessage($message_text, $lineBot);
+                    LineWebhookServices::getReplyMessage($message_text, $lineBot, $event);
                     break;
 
                 case $datesCount > 10:
@@ -152,7 +152,7 @@ class LineWebhookServices
 
         } else {
             $message_text = "送信した内容にエラーがあります。\n以下のように3行だけで入力してください。\nex)\n20210101(開催日：いつからか)\n20210131(開催日：いつまでか)\nオープン(カテゴリレベル：f-channelに準拠)";
-            LineWebhookServices::getReplyMessage($message_text, $lineBot);
+            LineWebhookServices::getReplyMessage($message_text, $lineBot, $event);
         }
     }
 }
