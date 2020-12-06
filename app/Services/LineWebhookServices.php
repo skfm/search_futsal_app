@@ -91,6 +91,14 @@ class LineWebhookServices
         return $lineBot;
     }
 
+    public static function getCarouselReplyMessage($columns, $lineBot, $event)
+    {
+        $carousel = new CarouselTemplateBuilder($columns);
+        $carousel_message = new TemplateMessageBuilder("メッセージのタイトル", $carousel);
+        $lineBot->replyMessage($event->getReplyToken(), $carousel_message);
+        return $lineBot;
+    }
+
     public static function judgeReplyMessage($lineWordArr, $event, $lineBot)
     {
         if (preg_match("/20[0-9]{6}/", $lineWordArr[0]) && preg_match("/20[0-9]{6}/", $lineWordArr[1]) && isset($lineWordArr[2])) {
@@ -115,10 +123,7 @@ class LineWebhookServices
                     $column = new CarouselColumnTemplateBuilder("11件以上の検索結果", "検索結果が全て表示できないです。エフチャンネルのHPより検索してください", null,[$action]);
                     $columns[] = $column;
 
-                    $carousel = new CarouselTemplateBuilder($columns);
-
-                    $carousel_message = new TemplateMessageBuilder("メッセージのタイトル", $carousel);
-                    $lineBot->replyMessage($event->getReplyToken(), $carousel_message);
+                    LineWebhookServices::getCarouselReplyMessage($columns, $lineBot, $event);
                     break;
 
                 default:
@@ -145,9 +150,8 @@ class LineWebhookServices
                         $columns[] = $column;
                     }
 
-                    $carousel = new CarouselTemplateBuilder($columns);
-                    $carousel_message = new TemplateMessageBuilder("メッセージのタイトル", $carousel);
-                    $lineBot->replyMessage($event->getReplyToken(), $carousel_message);
+                    LineWebhookServices::getCarouselReplyMessage($columns, $lineBot, $event);
+                    break;
             }
 
         } else {
