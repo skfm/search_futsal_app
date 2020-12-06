@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Log;
 use \LINE\LINEBot\HTTPClient\CurlHTTPClient;
 use \LINE\LINEBot;
 use \LINE\LINEBot\Constant\HTTPHeader;
-use LINE\LINEBot\MessageBuilder\TextMessageBuilder;
-use LINE\LINEBot\MessageBuilder\MultiMessageBuilder;
 use App\Services\LineWebhookServices;
 
 class LineWebhookController extends Controller
@@ -40,13 +38,10 @@ class LineWebhookController extends Controller
                 $lineWordArr[2] = LineWebhookServices::getFutsalCategory($lineWordArr);
 
                 if ($lineWordArrCount === 3) {
-                    $lineBot = LineWebhookServices::getReplyMessage($lineWordArr, $event, $lineBot);
+                    $lineBot = LineWebhookServices::judgeReplyMessage($lineWordArr, $event, $lineBot);
                 } else {
                     $message_text = "送信した内容にエラーがあります。\n以下のように3行だけで入力してください。\nex)\n20210101(開催日：いつからか)\n20210131(開催日：いつまでか)\nオープン(カテゴリレベル：f-channelに準拠)";
-                    $sendMessage = new MultiMessageBuilder();
-                    $textMessageBuilder = new TextMessageBuilder($message_text);
-                    $sendMessage->add($textMessageBuilder);
-                    $lineBot->replyMessage($event->getReplyToken(), $sendMessage);
+                    LineWebhookServices::getReplyMessage($message_text, $lineBot);
                 }
             }
 

@@ -82,7 +82,16 @@ class LineWebhookServices
         return $lineWordArr[2];
     }
 
-    public static function getReplyMessage($lineWordArr, $event, $lineBot)
+    public static function getReplyMessage($message_text, $lineBot)
+    {
+        $sendMessage = new MultiMessageBuilder();
+        $textMessageBuilder = new TextMessageBuilder($message_text);
+        $sendMessage->add($textMessageBuilder);
+        $lineBot->replyMessage($event->getReplyToken(), $sendMessage);
+        return $lineBot;
+    }
+
+    public static function judgeReplyMessage($lineWordArr, $event, $lineBot)
     {
         if (preg_match("/20[0-9]{6}/", $lineWordArr[0]) && preg_match("/20[0-9]{6}/", $lineWordArr[1]) && isset($lineWordArr[2])) {
             $goutte = GoutteFacade::request('GET', "https://www.f-channel.net/search/?q=&g=2&dateFrom=".$lineWordArr[0]."&dateTo=".$lineWordArr[1]."&pref=27&reservation=1&c=".$lineWordArr[2]."#searchResults");
@@ -97,10 +106,7 @@ class LineWebhookServices
             switch ($datesCount){
                 case 0:
                     $message_text = "検索結果が0件でした。日程を変更して再検索して見てください。";
-                    $sendMessage = new MultiMessageBuilder();
-                    $textMessageBuilder = new TextMessageBuilder($message_text);
-                    $sendMessage->add($textMessageBuilder);
-                    $lineBot->replyMessage($event->getReplyToken(), $sendMessage);
+                    LineWebhookServices::getReplyMessage($message_text, $lineBot);
                     break;
 
                 case $datesCount > 10:
@@ -146,12 +152,7 @@ class LineWebhookServices
 
         } else {
             $message_text = "送信した内容にエラーがあります。\n以下のように3行だけで入力してください。\nex)\n20210101(開催日：いつからか)\n20210131(開催日：いつまでか)\nオープン(カテゴリレベル：f-channelに準拠)";
-            $sendMessage = new MultiMessageBuilder();
-            $textMessageBuilder = new TextMessageBuilder($message_text);
-            $sendMessage->add($textMessageBuilder);
-            $lineBot->replyMessage($event->getReplyToken(), $sendMessage);
+            LineWebhookServices::getReplyMessage($message_text, $lineBot);
         }
-
-        return $lineBot;
     }
 }
