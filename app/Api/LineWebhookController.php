@@ -41,7 +41,7 @@ class LineWebhookController extends Controller
                     $lineBot = LineWebhookServices::judgeReplyMessage($lineWordArr, $event, $lineBot);
                 } else {
                     $message_text = "送信した内容にエラーがあります。\n以下のように3行だけで入力してください。\nex)\n20210101(開催日：いつからか)\n20210131(開催日：いつまでか)\nオープン(カテゴリレベル：f-channelに準拠)";
-                    LineWebhookServices::getReplyMessage($message_text, $lineBot);
+                    $lineBot = LineWebhookServices::getReplyMessage($message_text, $lineBot);
                 }
             }
 
